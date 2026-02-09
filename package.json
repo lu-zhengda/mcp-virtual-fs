@@ -1,8 +1,22 @@
 {
   "name": "mcp-virtual-fs",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "PostgreSQL-backed virtual filesystem exposed via MCP tools",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lu-zhengda/mcp-virtual-fs.git"
+  },
+  "homepage": "https://github.com/lu-zhengda/mcp-virtual-fs#readme",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "virtual-filesystem",
+    "postgresql",
+    "ai-agent",
+    "filesystem"
+  ],
   "main": "dist/index.js",
   "bin": {
     "mcp-virtual-fs": "dist/index.js"
