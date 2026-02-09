@@ -30,6 +30,8 @@ export interface StatResult {
  * Stateless w.r.t. session — each method takes sessionId as a parameter.
  * Sessions are auto-provisioned on first use.
  */
+const MAX_GLOB_PATHS = 10_000;
+
 export class VirtualFS {
   constructor(private backend: StorageBackend) {}
 
@@ -237,6 +239,12 @@ export class VirtualFS {
   async glob(sessionId: string, pattern: string, store?: string): Promise<string[]> {
     const nsId = await this.ns(sessionId, store);
     const allPaths = await this.backend.allFilePaths(nsId);
+    if (allPaths.length > MAX_GLOB_PATHS) {
+      throw new VfsError(
+        "EINVAL",
+        `Too many files (${allPaths.length}) to glob — maximum is ${MAX_GLOB_PATHS}. Use grep with path_filter to narrow your search.`,
+      );
+    }
     const isMatch = picomatch(pattern);
     return allPaths.filter((p) => isMatch(p));
   }
@@ -260,7 +268,9 @@ export class VirtualFS {
 
     let sqlPathFilter: string | undefined;
     if (pathFilter) {
-      sqlPathFilter = pathFilter.replace(/\*\*/g, "%").replace(/\*/g, "%");
+      // Escape SQL LIKE metacharacters before converting glob wildcards
+      const escaped = pathFilter.replace(/%/g, "\\%").replace(/_/g, "\\_");
+      sqlPathFilter = escaped.replace(/\*\*/g, "%").replace(/\*/g, "%");
     }
 
     return this.backend.grepContent(nsId, pattern, sqlPathFilter);

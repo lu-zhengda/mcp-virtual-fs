@@ -52,7 +52,7 @@ export function registerTools(
         return ok({ content, size: content.length });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -79,7 +79,7 @@ export function registerTools(
         return ok({ path, size: content.length, created_parents: result.created_parents });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -104,7 +104,7 @@ export function registerTools(
         return ok({ path, appended_bytes: content.length });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -129,7 +129,7 @@ export function registerTools(
         return ok(result);
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -154,7 +154,7 @@ export function registerTools(
         return ok({ entries });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -179,7 +179,7 @@ export function registerTools(
         return ok({ path, already_existed: result.already_existed });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -203,7 +203,7 @@ export function registerTools(
         return ok({ path, deleted });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -228,7 +228,7 @@ export function registerTools(
         return ok({ source, destination });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -252,7 +252,7 @@ export function registerTools(
         return ok({ files, count: files.length });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -283,7 +283,7 @@ export function registerTools(
         return ok({ matches, count: matches.length });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
@@ -302,7 +302,7 @@ export function registerTools(
         return ok({ stores, count: stores.length });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
-        throw e;
+        return err("Internal server error");
       }
     },
   );
