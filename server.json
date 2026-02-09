@@ -1,0 +1,50 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.lu-zhengda/virtual-fs",
+  "description": "PostgreSQL-backed virtual filesystem exposed via MCP tools. Gives AI agents persistent, session-isolated file operations that survive container restarts and scale across deployments.",
+  "repository": {
+    "url": "https://github.com/lu-zhengda/mcp-virtual-fs",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mcp-virtual-fs",
+      "version": "0.2.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "DATABASE_URL",
+          "description": "PostgreSQL connection string (e.g. postgresql://user:pass@host:5432/dbname)",
+          "isRequired": true,
+          "format": "string",
+          "isSecret": true
+        },
+        {
+          "name": "VFS_AUTO_INIT",
+          "description": "Auto-create database tables on startup (set to 'true' for first run)",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "VFS_SESSION_ID",
+          "description": "Deterministic session ID for resumable sessions across restarts",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        },
+        {
+          "name": "VFS_ENABLE_RLS",
+          "description": "Enable PostgreSQL Row Level Security for database-enforced session isolation",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

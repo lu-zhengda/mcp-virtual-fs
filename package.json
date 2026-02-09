@@ -1,6 +1,7 @@
 {
   "name": "mcp-virtual-fs",
   "version": "0.2.0",
+  "mcpName": "io.github.lu-zhengda/virtual-fs",
   "description": "PostgreSQL-backed virtual filesystem exposed via MCP tools",
   "type": "module",
   "license": "MIT",
