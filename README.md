@@ -18,11 +18,14 @@ Agents work well with filesystems for context management, but coupling storage t
 - **Standard file operations** — 11 tools that mirror familiar POSIX commands
 - **Row Level Security** — optional database-enforced isolation between sessions
 
+## Prerequisites
+
+- **Node.js** 20 or later
+- **PostgreSQL** 14 or later (with `pg_trgm` extension — included in most distributions)
+
 ## Quick Start
 
 ### 1. Set up PostgreSQL
-
-You need a PostgreSQL instance with the `pg_trgm` extension.
 
 ```bash
 # Using Docker
@@ -174,45 +177,12 @@ Then configure the MCP server to connect as `vfs_app`:
 }
 ```
 
-## Architecture
-
-```
-MCP Client (Claude, agent, etc.)
-    ↓ stdio / HTTP
-┌───────────────────────────────────┐
-│  tools.ts — 11 MCP tool handlers │
-│  vfs.ts — filesystem semantics    │
-│  storage/interface.ts — abstract  │
-│  storage/postgres.ts — PG impl   │
-└───────────────────────────────────┘
-    ↓ SQL
-PostgreSQL (with optional RLS)
-```
-
-The storage backend is pluggable. `VirtualFS` depends only on the `StorageBackend` interface — never on a concrete implementation.
-
-```
-mcp-virtual-fs/
-├── src/
-│   ├── index.ts              # Entry point: env config, MCP server + stdio
-│   ├── tools.ts              # 11 MCP tool registrations with Zod schemas
-│   ├── vfs.ts                # VirtualFS class: filesystem semantics
-│   ├── paths.ts              # Path normalization, validation, ancestors
-│   └── storage/
-│       ├── interface.ts      # StorageBackend interface + types
-│       ├── postgres.ts       # PostgreSQL implementation
-│       ├── schema.ts         # Embedded SQL for auto-init
-│       └── index.ts          # Backend factory
-├── sql/
-│   ├── schema.sql            # Database schema
-│   └── rls.sql               # Row Level Security setup
-└── tests/
-    ├── unit/                 # Pure function tests
-    ├── integration/          # PostgreSQL Docker tests
-    └── helpers/              # Testcontainers setup
-```
-
 ## Development
+
+### Requirements
+
+- **Node.js** 20+
+- **Docker** (for integration tests — runs PostgreSQL via [testcontainers](https://node.testcontainers.org/))
 
 ```bash
 git clone https://github.com/lu-zhengda/mcp-virtual-fs.git
