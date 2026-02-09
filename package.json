@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lu-zhengda/mcp-virtual-fs.git"
+    "url": "git+https://github.com/lu-zhengda/mcp-virtual-fs.git"
   },
   "homepage": "https://github.com/lu-zhengda/mcp-virtual-fs#readme",
   "keywords": [

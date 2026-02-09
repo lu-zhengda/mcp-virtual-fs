@@ -1,5 +1,11 @@
 # mcp-virtual-fs
 
+[![npm version](https://img.shields.io/npm/v/mcp-virtual-fs)](https://www.npmjs.com/package/mcp-virtual-fs)
+[![CI](https://github.com/lu-zhengda/mcp-virtual-fs/actions/workflows/ci.yml/badge.svg)](https://github.com/lu-zhengda/mcp-virtual-fs/actions/workflows/ci.yml)
+[![npm package size](https://img.shields.io/bundlephobia/min/mcp-virtual-fs)](https://bundlephobia.com/package/mcp-virtual-fs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/node/v/mcp-virtual-fs)](https://nodejs.org)
+
 A PostgreSQL-backed virtual filesystem exposed via [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) tools. Gives AI agents persistent, session-isolated file operations that survive container restarts and scale across deployments.
 
 ## Why
