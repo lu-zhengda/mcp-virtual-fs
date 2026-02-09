@@ -4,7 +4,7 @@ A PostgreSQL-backed virtual filesystem exposed via [Model Context Protocol](http
 
 ## Why
 
-Agents work well with filesystems for context management, but traditional filesystems are tied to ephemeral runtime storage. This MCP server provides:
+Agents work well with filesystems for context management, but coupling storage to the agent runtime means data is lost when pods restart or containers are recycled. This MCP server decouples storage from runtime:
 
 - **Persistent storage** — files survive process restarts, stored in PostgreSQL
 - **Session isolation** — each agent session gets its own namespace automatically
@@ -16,7 +16,7 @@ Agents work well with filesystems for context management, but traditional filesy
 
 ### 1. Set up PostgreSQL
 
-You need a PostgreSQL instance with the `pg_trgm` extension (included in most distributions).
+You need a PostgreSQL instance with the `pg_trgm` extension.
 
 ```bash
 # Using Docker
@@ -50,7 +50,7 @@ That's it. `VFS_AUTO_INIT=true` creates the tables on first run.
 
 ### 3. Use the tools
 
-Tool names are short POSIX-style names, prefixed by the MCP server name (e.g., `mcp__virtual-fs__read`):
+Tool names are short POSIX-style names:
 
 ```
 write({ path: "/notes/todo.md", content: "# My Tasks\n- Ship feature" })
@@ -209,7 +209,7 @@ mcp-virtual-fs/
 ## Development
 
 ```bash
-git clone https://github.com/your-org/mcp-virtual-fs.git
+git clone https://github.com/lu-zhengda/mcp-virtual-fs.git
 cd mcp-virtual-fs
 npm install
 npm run build
