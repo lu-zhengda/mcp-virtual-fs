@@ -32,14 +32,14 @@ describe("write + read", () => {
 
   it("auto-creates parent directories on write", async () => {
     const result = await vfs.write(SESSION, "/deep/nested/file.txt", "content");
-    expect(result.created_parents).toBe(true);
+    expect(result.has_parents).toBe(true);
     const entries = await vfs.ls(SESSION, "/deep");
     expect(entries).toEqual([{ name: "nested", type: "directory" }]);
   });
 
-  it("returns created_parents: false for root-level files", async () => {
+  it("returns has_parents: false for root-level files", async () => {
     const result = await vfs.write(SESSION, "/root-file.txt", "content");
-    expect(result.created_parents).toBe(false);
+    expect(result.has_parents).toBe(false);
   });
 
   it("reads empty string for file written with empty content", async () => {

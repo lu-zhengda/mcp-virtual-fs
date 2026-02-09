@@ -48,7 +48,7 @@ npm run lint:fix       # Auto-fix
 |------|---------|
 | `src/index.ts` | Entry point — env config, backend init, MCP server, stdio transport |
 | `src/tools.ts` | 11 MCP tool registrations with Zod schemas and annotations |
-| `src/vfs.ts` | `VirtualFS` class — filesystem semantics (read/write/append/stat/ls/mkdir/rm/move/glob/grep/listStores) |
+| `src/vfs.ts` | `VirtualFS` class — filesystem semantics (read/write/append/stat/ls/mkdir/rm/mv/glob/grep/listStores) |
 | `src/paths.ts` | Pure path utilities — normalize, parent, basename, ancestors, validate |
 | `src/storage/interface.ts` | `StorageBackend` interface + `VfsNode`, `GrepMatch` types |
 | `src/storage/postgres.ts` | PostgreSQL implementation with RLS-aware connection handling |
@@ -61,7 +61,7 @@ npm run lint:fix       # Auto-fix
 - **Errors use POSIX codes.** `VfsError` has a `code` field: `ENOENT`, `EISDIR`, `ENOTDIR`, `EEXIST`, `EINVAL`.
 - **Tool callbacks catch `VfsError`** and return `{ isError: true }` MCP responses. Other errors propagate.
 - **All tool responses are structured JSON** (via `JSON.stringify`), not plain text. Error responses are plain text with `isError: true`.
-- **Tool names are short POSIX-style** (`read`, `write`, `ls`, `mkdir`, `rm`, `glob`, `grep`, `stat`, `append`, `move`, `list_stores`) — no `vfs_` prefix since MCP namespaces by server name.
+- **Tool names are short POSIX-style** (`read`, `write`, `ls`, `mkdir`, `rm`, `glob`, `grep`, `stat`, `append`, `mv`, `stores`) — no `vfs_` prefix since MCP namespaces by server name.
 - **SQL uses `ON CONFLICT DO NOTHING`** for idempotent operations (dirs, sessions).
 - **SQL uses `ON CONFLICT DO UPDATE`** for upsert operations (file writes).
 - **Tests use real PostgreSQL** via testcontainers. No mocks for storage. The shared container helper (`tests/helpers/pg-container.ts`) uses ref counting.

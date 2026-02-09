@@ -76,18 +76,18 @@ All tools return structured JSON responses.
 | Tool | Parameters | Returns | Description |
 |------|-----------|---------|-------------|
 | `read` | `path` | `{content, size}` | Read file contents |
-| `write` | `path`, `content` | `{path, size, created_parents}` | Write file (creates parents automatically) |
+| `write` | `path`, `content` | `{path, size, has_parents}` | Write file (creates parents automatically) |
 | `append` | `path`, `content` | `{path, appended_bytes}` | Append to file (creates if missing) |
 | `stat` | `path` | `{exists, type?, size?, children?}` | Check existence and get metadata |
 | `ls` | `path` | `{entries: [{name, type}]}` | List directory (dirs first, then alphabetical) |
 | `mkdir` | `path` | `{path, already_existed}` | Create directory and parents (mkdir -p) |
 | `rm` | `path` | `{path, deleted}` | Remove file or directory recursively |
-| `move` | `source`, `destination` | `{source, destination}` | Move/rename file or directory |
+| `mv` | `source`, `destination` | `{source, destination}` | Move/rename file or directory |
 | `glob` | `pattern` | `{files, count}` | Find files by glob (e.g., `**/*.ts`, `**/*.{js,ts}`) |
 | `grep` | `pattern`, `path_filter?` | `{matches, count}` | Search file contents by regex |
-| `list_stores` | *(none)* | `{stores, count}` | List all persistent store names |
+| `stores` | *(none)* | `{stores, count}` | List all persistent store names |
 
-All tools (except `list_stores`) accept an optional `store` parameter for cross-session persistent storage.
+All tools (except `stores`) accept an optional `store` parameter for cross-session persistent storage.
 
 ## Session Management
 
@@ -131,7 +131,7 @@ read({ path: "/context.md", store: "agent-memory" })
 write({ path: "/scratch.txt", content: "session-only data" })
 
 // List all available stores
-list_stores()
+stores()
 ```
 
 Stores are auto-created on first use.

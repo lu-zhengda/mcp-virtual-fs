@@ -59,10 +59,10 @@ describe("MCP tool e2e via in-memory transport", () => {
     expect(names).toContain("ls");
     expect(names).toContain("mkdir");
     expect(names).toContain("rm");
-    expect(names).toContain("move");
+    expect(names).toContain("mv");
     expect(names).toContain("glob");
     expect(names).toContain("grep");
-    expect(names).toContain("list_stores");
+    expect(names).toContain("stores");
     expect(tools).toHaveLength(11);
   });
 
@@ -91,7 +91,7 @@ describe("MCP tool e2e via in-memory transport", () => {
       path: "/project/hello.ts",
       content: 'export const msg = "hello";',
     });
-    const writeData = writeResult.data as { path: string; size: number; created_parents: boolean };
+    const writeData = writeResult.data as { path: string; size: number; has_parents: boolean };
     expect(writeData.path).toBe("/project/hello.ts");
     expect(writeData.size).toBe(27);
 
@@ -156,9 +156,9 @@ describe("MCP tool e2e via in-memory transport", () => {
     expect(data.count).toBeGreaterThanOrEqual(1);
   });
 
-  it("move renames files", async () => {
+  it("mv renames files", async () => {
     await callTool("write", { path: "/project/old.txt", content: "moveme" });
-    const moveResult = await callTool("move", {
+    const moveResult = await callTool("mv", {
       source: "/project/old.txt",
       destination: "/project/new.txt",
     });
@@ -224,8 +224,8 @@ describe("MCP tool e2e via in-memory transport", () => {
     expect((storeRead.data as { content: string }).content).toBe("store-only");
   });
 
-  it("list_stores returns store names", async () => {
-    const result = await callTool("list_stores");
+  it("stores returns store names", async () => {
+    const result = await callTool("stores");
     const data = result.data as { stores: string[]; count: number };
     expect(data.stores).toContain("mcp-shared");
     expect(data.count).toBeGreaterThanOrEqual(1);

@@ -94,7 +94,7 @@ export class VirtualFS {
     path: string,
     content: string,
     store?: string,
-  ): Promise<{ created_parents: boolean }> {
+  ): Promise<{ has_parents: boolean }> {
     const p = validatePath(path);
     if (p === "/") {
       throw new VfsError("EINVAL", "Cannot write to root directory");
@@ -108,10 +108,10 @@ export class VirtualFS {
     }
 
     const ancestors = ancestorPaths(p);
-    const createdParents = ancestors.length > 1;
+    const hasParents = ancestors.length > 1;
     await this.ensureParents(nsId, p);
     await this.backend.upsertFile(nsId, p, content);
-    return { created_parents: createdParents };
+    return { has_parents: hasParents };
   }
 
   async append(

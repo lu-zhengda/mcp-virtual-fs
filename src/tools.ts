@@ -17,7 +17,9 @@ const storeParam = z
   .string()
   .optional()
   .describe(
-    "Named persistent store for cross-session access. Omit to use the session's own namespace.",
+    "Named persistent store for cross-session access. " +
+      "Sessions are ephemeral (one per MCP connection); named stores persist indefinitely. " +
+      "Omit to use the session's own namespace.",
   );
 
 /**
@@ -62,13 +64,12 @@ export function registerTools(
   server.tool(
     "write",
     "Write content to a file, creating it if it doesn't exist. " +
-      "Parent directories are created automatically (like mkdir -p). " +
+      "Parent directories are created automatically (mkdir -p). " +
       "Overwrites existing file content entirely. " +
-      "Returns whether parent directories were created. " +
       "Errors: EISDIR if the path is an existing directory, EINVAL if writing to root.",
     {
       path: z.string().describe("Absolute path to the file (e.g. /notes/todo.md)"),
-      content: z.string().max(MAX_CONTENT_BYTES).describe("Full content to write to the file (max 10 MB)"),
+      content: z.string().max(MAX_CONTENT_BYTES).describe("Full content to write (max 10 MB per call)"),
       store: storeParam,
     },
     { idempotentHint: true },
@@ -76,7 +77,7 @@ export function registerTools(
       try {
         const sid = resolveSession(extra, fallbackSessionId);
         const result = await vfs.write(sid, path, content, store);
-        return ok({ path, size: content.length, created_parents: result.created_parents });
+        return ok({ path, size: content.length, has_parents: result.has_parents });
       } catch (e) {
         if (e instanceof VfsError) return err(`${e.code}: ${e.message}`);
         return err("Internal server error");
@@ -91,6 +92,7 @@ export function registerTools(
     "Append content to the end of a file. Creates the file if it doesn't exist. " +
       "Parent directories are created automatically. " +
       "Useful for logs or incrementally building files. " +
+      "The 10 MB limit is per call — total file size is not capped. " +
       "Errors: EISDIR if the path is an existing directory, EINVAL if appending to root.",
     {
       path: z.string().describe("Absolute path to the file to append to"),
@@ -188,8 +190,9 @@ export function registerTools(
 
   server.tool(
     "rm",
-    "Remove a file or directory recursively (like rm -rf). " +
-      "Returns the total number of nodes deleted (the target plus any descendants). " +
+    "Remove a file or directory. Directories are removed recursively including all descendants. " +
+      "This operation is non-recoverable — there is no undo or trash. " +
+      "Returns the total number of nodes deleted. " +
       "Errors: ENOENT if the path does not exist, EINVAL if attempting to remove root.",
     {
       path: z.string().describe("Absolute path to remove"),
@@ -208,10 +211,10 @@ export function registerTools(
     },
   );
 
-  // ── move ────────────────────────────────────────────────────
+  // ── mv ──────────────────────────────────────────────────────
 
   server.tool(
-    "move",
+    "mv",
     "Move or rename a file or directory. Moves all descendants when moving a directory. " +
       "Parent directories at the destination are created automatically. " +
       "Errors: ENOENT if source doesn't exist, EEXIST if destination already exists, " +
@@ -262,7 +265,7 @@ export function registerTools(
   server.tool(
     "grep",
     "Search file contents using a regular expression. Returns matching lines with " +
-      "file path and line number. Searches are accelerated by a PostgreSQL trigram index. " +
+      "file path and line number. Optimized for fast content search across all files. " +
       "Optionally filter which files to search with a path glob.",
     {
       pattern: z
@@ -288,12 +291,12 @@ export function registerTools(
     },
   );
 
-  // ── list_stores ─────────────────────────────────────────────
+  // ── stores ──────────────────────────────────────────────────
 
   server.tool(
-    "list_stores",
+    "stores",
     "List all named persistent stores. Stores are cross-session namespaces " +
-      "for long-term data that survives session cleanup. Returns an array of store names.",
+      "for long-term data that persists indefinitely. Returns an array of store names.",
     {},
     { readOnlyHint: true },
     async () => {
