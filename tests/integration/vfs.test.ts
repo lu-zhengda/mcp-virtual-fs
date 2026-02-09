@@ -411,6 +411,15 @@ describe("grep", () => {
     const matches = await vfs.grep(S, "zzzznonexistent");
     expect(matches).toEqual([]);
   });
+
+  it("throws EINVAL for invalid regex patterns", async () => {
+    try {
+      await vfs.grep(S, "[invalid");
+      expect.fail("should have thrown");
+    } catch (e) {
+      expect((e as VfsError).code).toBe("EINVAL");
+    }
+  });
 });
 
 describe("listStores", () => {

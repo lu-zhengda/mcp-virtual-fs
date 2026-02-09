@@ -122,4 +122,15 @@ describe("validatePath", () => {
     const p = "/" + "a".repeat(4095);
     expect(validatePath(p)).toBe(p);
   });
+
+  it("throws on paths exceeding max depth (50 levels)", () => {
+    const deep = "/" + Array.from({ length: 51 }, (_, i) => `d${i}`).join("/");
+    expect(() => validatePath(deep)).toThrow(PathError);
+    expect(() => validatePath(deep)).toThrow("depth");
+  });
+
+  it("accepts paths at the depth limit (50 levels)", () => {
+    const atLimit = "/" + Array.from({ length: 50 }, (_, i) => `d${i}`).join("/");
+    expect(validatePath(atLimit)).toBe(atLimit);
+  });
 });

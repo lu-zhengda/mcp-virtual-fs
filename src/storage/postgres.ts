@@ -252,41 +252,40 @@ export class PostgresBackend implements StorageBackend {
     pattern: string,
     pathFilter?: string,
   ): Promise<GrepMatch[]> {
-    let fileQuery = `
-      SELECT path, content FROM vfs_nodes
-      WHERE session_id = $1
-        AND node_type = 'file'
-        AND content IS NOT NULL
-        AND content ~ $2`;
+    // Line-level matching is done entirely in PostgreSQL to avoid
+    // ReDoS risk from JS RegExp on user-supplied patterns.
+    let query = `
+      WITH matched_files AS (
+        SELECT path, content FROM vfs_nodes
+        WHERE session_id = $1
+          AND node_type = 'file'
+          AND content IS NOT NULL
+          AND content ~ $2`;
     const params: unknown[] = [namespaceId, pattern];
 
     if (pathFilter) {
-      fileQuery += ` AND path LIKE $3`;
+      query += ` AND path LIKE $3`;
       params.push(pathFilter);
     }
 
-    const { rows } = await this.query<{ path: string; content: string }>(
-      fileQuery,
+    query += `
+      )
+      SELECT f.path, t.ordinality::integer AS line_number, t.line
+      FROM matched_files f,
+           regexp_split_to_table(f.content, E'\\n') WITH ORDINALITY AS t(line, ordinality)
+      WHERE t.line ~ $2
+      ORDER BY f.path, t.ordinality`;
+
+    const { rows } = await this.query<{ path: string; line_number: number; line: string }>(
+      query,
       params,
       namespaceId,
     );
 
-    const matches: GrepMatch[] = [];
-    const regex = new RegExp(pattern);
-
-    for (const row of rows) {
-      const lines = row.content.split("\n");
-      for (let i = 0; i < lines.length; i++) {
-        if (regex.test(lines[i])) {
-          matches.push({
-            path: row.path,
-            lineNumber: i + 1,
-            line: lines[i],
-          });
-        }
-      }
-    }
-
-    return matches;
+    return rows.map((r) => ({
+      path: r.path,
+      lineNumber: r.line_number,
+      line: r.line,
+    }));
   }
 }

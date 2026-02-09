@@ -4,6 +4,7 @@
  */
 
 const MAX_PATH_LENGTH = 4096;
+const MAX_PATH_DEPTH = 50;
 
 export class PathError extends Error {
   constructor(message: string) {
@@ -83,6 +84,11 @@ export function validatePath(input: string): string {
   // eslint-disable-next-line no-control-regex
   if (/[\x00-\x1f]/.test(input)) {
     throw new PathError("Path must not contain control characters");
+  }
+
+  const depth = normalized.split("/").filter(Boolean).length;
+  if (depth > MAX_PATH_DEPTH) {
+    throw new PathError(`Path depth exceeds maximum of ${MAX_PATH_DEPTH} levels`);
   }
 
   return normalized;

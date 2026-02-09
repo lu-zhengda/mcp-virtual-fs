@@ -247,6 +247,15 @@ export class VirtualFS {
     pathFilter?: string,
     store?: string,
   ): Promise<GrepMatch[]> {
+    // Validate the regex pattern before sending to PostgreSQL.
+    // This gives a clear error message for invalid patterns instead of
+    // a raw SQL error, and acts as a basic sanity check.
+    try {
+      new RegExp(pattern);
+    } catch {
+      throw new VfsError("EINVAL", `Invalid regex pattern: ${pattern}`);
+    }
+
     const nsId = await this.ns(sessionId, store);
 
     let sqlPathFilter: string | undefined;

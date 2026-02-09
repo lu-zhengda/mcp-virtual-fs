@@ -2,6 +2,9 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { VirtualFS, VfsError } from "./vfs.js";
 
+const MAX_CONTENT_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_PATTERN_LENGTH = 500;
+
 function ok(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data) }] };
 }
@@ -65,7 +68,7 @@ export function registerTools(
       "Errors: EISDIR if the path is an existing directory, EINVAL if writing to root.",
     {
       path: z.string().describe("Absolute path to the file (e.g. /notes/todo.md)"),
-      content: z.string().describe("Full content to write to the file"),
+      content: z.string().max(MAX_CONTENT_BYTES).describe("Full content to write to the file (max 10 MB)"),
       store: storeParam,
     },
     { idempotentHint: true },
@@ -91,7 +94,7 @@ export function registerTools(
       "Errors: EISDIR if the path is an existing directory, EINVAL if appending to root.",
     {
       path: z.string().describe("Absolute path to the file to append to"),
-      content: z.string().describe("Content to append to the end of the file"),
+      content: z.string().max(MAX_CONTENT_BYTES).describe("Content to append (max 10 MB per call)"),
       store: storeParam,
     },
     async ({ path, content, store }, extra) => {
@@ -238,7 +241,7 @@ export function registerTools(
       "recursive matching (**/*.md), and brace expansion ({py,json}). " +
       "Returns an array of matching file paths. Only matches files, not directories.",
     {
-      pattern: z.string().describe("Glob pattern (e.g. **/*.ts, /src/**/*.{js,ts})"),
+      pattern: z.string().max(MAX_PATTERN_LENGTH).describe("Glob pattern (e.g. **/*.ts, /src/**/*.{js,ts})"),
       store: storeParam,
     },
     { readOnlyHint: true },
@@ -264,6 +267,7 @@ export function registerTools(
     {
       pattern: z
         .string()
+        .max(MAX_PATTERN_LENGTH)
         .describe("Regular expression pattern to search for (e.g. TODO|FIXME)"),
       path_filter: z
         .string()
