@@ -6,17 +6,31 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/node/v/mcp-virtual-fs)](https://nodejs.org)
 
-A PostgreSQL-backed virtual filesystem exposed via [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) tools. Gives AI agents persistent, session-isolated file operations that survive container restarts and scale across deployments.
+An [MCP server](https://modelcontextprotocol.io/) that provides AI agents with a **persistent, PostgreSQL-backed virtual filesystem**. Supports session-isolated file operations, cross-session shared stores, glob/grep search, and Row Level Security — all exposed as standard [Model Context Protocol](https://modelcontextprotocol.io/) tools.
+
+Works with any MCP client: **Claude Desktop**, **Claude Code**, **Cursor**, **Windsurf**, **Cline**, and others.
+
+## Features
+
+- **Persistent file storage** — files are stored in PostgreSQL and survive process restarts, container recycling, and redeployments
+- **Session isolation** — each agent session gets its own namespace automatically, no configuration needed
+- **Cross-session stores** — named persistent stores for sharing data between agents or for long-term agent memory
+- **11 POSIX-style tools** — `read`, `write`, `append`, `stat`, `ls`, `mkdir`, `rm`, `mv`, `glob`, `grep`, `stores`
+- **Glob and grep search** — find files by pattern (`**/*.ts`) or search content by regex, powered by PostgreSQL trigram indexes
+- **Row Level Security** — optional database-enforced isolation between sessions for multi-tenant deployments
+- **Zero config** — auto-creates tables on first run with `VFS_AUTO_INIT=true`
+
+## Use Cases
+
+- **Agent scratchpad** — give LLM agents a persistent workspace to read/write files across tool calls
+- **Long-term agent memory** — store notes, context, and knowledge across sessions using named stores
+- **Multi-agent collaboration** — multiple agents share files through cross-session stores
+- **Sandboxed file operations** — agents interact with a virtual filesystem instead of the host OS
+- **CI/CD artifact storage** — persist build outputs, logs, and reports in a queryable filesystem
 
 ## Why
 
-Agents work well with filesystems for context management, but coupling storage to the agent runtime means data is lost when pods restart or containers are recycled. This MCP server decouples storage from runtime:
-
-- **Persistent storage** — files survive process restarts, stored in PostgreSQL
-- **Session isolation** — each agent session gets its own namespace automatically
-- **Cross-session stores** — named persistent stores for long-term agent memory
-- **Standard file operations** — 11 tools that mirror familiar POSIX commands
-- **Row Level Security** — optional database-enforced isolation between sessions
+Agents work well with filesystems for context management, but coupling storage to the agent runtime means data is lost when pods restart or containers are recycled. This MCP server decouples storage from runtime by moving file operations to PostgreSQL — giving agents persistent, isolated, and searchable file storage without touching the host filesystem.
 
 ## Prerequisites
 
