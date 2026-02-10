@@ -1,7 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.lu-zhengda/virtual-fs",
-  "description": "PostgreSQL-backed virtual filesystem for AI agents with persistent, session-isolated storage.",
+  "title": "Virtual Filesystem",
+  "description": "PostgreSQL-backed virtual filesystem MCP server. Gives AI agents persistent, session-isolated file operations with cross-session stores, glob/grep search, and Row Level Security.",
+  "websiteUrl": "https://github.com/lu-zhengda/mcp-virtual-fs#readme",
   "repository": {
     "url": "https://github.com/lu-zhengda/mcp-virtual-fs",
     "source": "github"
@@ -10,6 +12,7 @@
   "packages": [
     {
       "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "mcp-virtual-fs",
       "version": "0.2.1",
       "transport": {
@@ -20,28 +23,24 @@
           "name": "DATABASE_URL",
           "description": "PostgreSQL connection string (e.g. postgresql://user:pass@host:5432/dbname)",
           "isRequired": true,
-          "format": "string",
           "isSecret": true
         },
         {
           "name": "VFS_AUTO_INIT",
           "description": "Auto-create database tables on startup (set to 'true' for first run)",
           "isRequired": false,
-          "format": "string",
           "isSecret": false
         },
         {
           "name": "VFS_SESSION_ID",
           "description": "Deterministic session ID for resumable sessions across restarts",
           "isRequired": false,
-          "format": "string",
           "isSecret": false
         },
         {
           "name": "VFS_ENABLE_RLS",
           "description": "Enable PostgreSQL Row Level Security for database-enforced session isolation",
           "isRequired": false,
-          "format": "string",
           "isSecret": false
         }
       ]

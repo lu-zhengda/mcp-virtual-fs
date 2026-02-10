@@ -2,7 +2,7 @@
   "name": "mcp-virtual-fs",
   "version": "0.2.1",
   "mcpName": "io.github.lu-zhengda/virtual-fs",
-  "description": "PostgreSQL-backed virtual filesystem exposed via MCP tools",
+  "description": "MCP server providing AI agents with persistent, PostgreSQL-backed virtual filesystem — session-isolated file operations, cross-session stores, glob/grep search, and Row Level Security",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -12,11 +12,22 @@
   "homepage": "https://github.com/lu-zhengda/mcp-virtual-fs#readme",
   "keywords": [
     "mcp",
+    "mcp-server",
     "model-context-protocol",
     "virtual-filesystem",
+    "virtual-fs",
     "postgresql",
     "ai-agent",
-    "filesystem"
+    "ai-tools",
+    "llm",
+    "agent-memory",
+    "agent-tools",
+    "persistent-storage",
+    "filesystem",
+    "file-storage",
+    "session-isolation",
+    "claude",
+    "mcp-tools"
   ],
   "main": "dist/index.js",
   "bin": {
