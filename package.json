@@ -1,6 +1,6 @@
 {
   "name": "mcp-virtual-fs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "mcpName": "io.github.lu-zhengda/virtual-fs",
   "description": "MCP server providing AI agents with persistent, PostgreSQL-backed virtual filesystem — session-isolated file operations, cross-session stores, glob/grep search, and Row Level Security",
   "type": "module",
