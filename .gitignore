@@ -2,3 +2,5 @@ node_modules/
 dist/
 *.tsbuildinfo
 .env
+.mcpregistry_github_token
+.mcpregistry_registry_token
